@@ -1,0 +1,26 @@
+-- =============================================================================
+-- MÓDULO 5: Consulta Integrada de Negocio - RetailPro (Versión Final Optimizada)
+-- Descripción: Combina la tabla de hechos con todas las dimensiones garantizando
+-- la integridad referencial y el manejo de registros huérfanos mediante COALESCE.
+-- =============================================================================
+
+SELECT 
+    v.id_venta,
+    v.fecha_venta,
+    c.id_cliente,
+    c.nombre AS nombre_cliente,
+    COALESCE(c.email, 'SIN EMAIL') AS email_cliente,
+    COALESCE(c.ciudad, 'SIN CIUDAD') AS ciudad,
+    p.id_producto,
+    p.nombre_producto,
+    COALESCE(cat.nombre_categoria, 'SIN CATEGORIA') AS categoria,
+    v.cantidad,
+    v.precio_unitario,
+    (v.cantidad * v.precio_unitario) AS total_venta
+FROM ventas v
+INNER JOIN clientes c 
+    ON v.id_cliente = c.id_cliente
+INNER JOIN productos p 
+    ON v.id_producto = p.id_producto
+LEFT JOIN categorias cat 
+    ON p.id_categoria = cat.id_categoria;
